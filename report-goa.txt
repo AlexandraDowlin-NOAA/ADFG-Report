@@ -1,0 +1,68 @@
+
+
+
+--sql
+select count (distinct a.species_code)
+from racebase.catch a, racebase.species b
+where region = 'GOA'
+and cruise = 202301
+and a.species_code = b.species_code
+and b.common_name not like '%egg%'
+and a.species_code < 39100
+/
+
+
+---------report code checks 
+-sucessful stations
+select count(*) biomass_worthy_stations
+from (
+select stationid, stratum
+from racebase.haul
+where region = 'GOA'
+and cruise = 202301
+and abundance_haul = 'Y'
+)
+/
+
+--attempted hauls
+select vessel,cruise,haul,haul_type,abundance_haul
+from racebase.haul
+where cruise = 202301
+and region = 'GOA'
+order by vessel, haul
+
+*count rows^
+
+
+--unsuccessful hauls
+select count(*) biomass_worthy_stations
+from (
+select stationid, stratum
+from racebase.haul
+where region = 'GOA'
+and cruise = 202301
+and abundance_haul = 'N'
+)
+/
+
+
+-- stations in alaska waters
+select count(*) 
+from racebase.haul
+where region = 'GOA'
+and cruise = 202301
+and (stationid, stratum) in (
+select stationid, stratum
+from goa.stations_3nm
+)
+/
+
+
+
+
+
+
+
+
+
+
