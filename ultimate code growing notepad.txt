@@ -1,0 +1,158 @@
+--catch all summary table , 571 rows of fish and invert taxa, 163 fish and 408 invert
+
+select c.species_code, common_name, species_name, sum(weight) total_weight_kg, sum(number_fish) total_count
+from racebase.haul h, racebase.catch c, racebase.species r
+where h.region = 'GOA'
+and h.cruise = 202301
+and h.hauljoin = c.hauljoin -- shorthand join by haul
+and c.species_code = r.species_code 
+group by c.species_code, common_name, species_name
+order by species_code
+/
+
+
+-- catch summary 3nm , 331 rows of 103 fish and 228 invert
+select r.species_code, r.common_name, r.species_name, sum(c.weight) total_weight_kg, sum(c.number_fish) total_count
+from racebase.haul h, racebase.catch c, racebase.species r
+where h.region = 'GOA'
+and h.cruise = 202301
+and h.hauljoin = c.hauljoin -- shorthand join by haul
+and c.species_code = r.species_code 
+and (stationid,stratum) in ( 
+select stationid, stratum
+from goa.stations_3nm
+where stratum != 0
+)
+group by r.species_code, r.common_name, r.species_name
+order by r.species_code
+/
+
+
+
+-- voucher table 3nm - this table is goooddd
+select b.common_name, b.species_name, count(*) "Count", 'Age Sample' "Comment"
+from racebase.specimen a, racebase.species b, racebase.haul c
+where a.region = 'GOA'
+and a.cruise = 202301
+and a.cruise = c.cruise
+and a.region = c.region
+and a.hauljoin = c.hauljoin
+and (stationid,stratum) in ( 
+select stationid, stratum
+from goa.stations_3nm
+where stratum != 0
+)
+and a.species_code = b.species_code
+and a.specimen_sample_type = 1
+group by b.common_name, b.species_name, 'Age Sample'
+union
+select b.common_name, b.species_name, sum(number_fish) "Count", 'Voucher' "Comment"
+from racebase.catch a, racebase.species b, racebase.haul c
+where a.region = 'GOA'
+and a.cruise = 202301
+and a.region = c.region
+and a.cruise = c.cruise
+and a.hauljoin = c.hauljoin
+and (stationid,stratum) in ( 
+select stationid, stratum
+from goa.stations_3nm
+where stratum != 0
+)
+and a.species_code = b.species_code
+and a.voucher is not null
+group by b.common_name, b.species_name, 'Voucher'
+order by "Comment" desc
+/
+
+
+
+-- voucher all **issue with voucher all table in R. Not counting total sum of count in one row, only counting one row as 1
+select b.common_name, b.species_name, count(*) "Count", 'Age Sample' "Comment"
+from racebase.specimen a, racebase.species b
+where a.region = 'GOA'
+and a.cruise = 202301
+and a.species_code = b.species_code
+and a.specimen_sample_type = 1
+group by b.common_name, b.species_name, 'Age Sample'
+union
+select b.common_name, b.species_name, sum(number_fish) "Count", 'Voucher' "Comment"
+from racebase.catch a, racebase.species b
+where a.region = 'GOA'
+and a.cruise = 202301
+and a.species_code = b.species_code
+and a.voucher is not null
+group by b.common_name, b.species_name, 'Voucher'
+order by "Comment" desc 
+/
+
+-------------------------------------------------------------------------------------------------------------------------------------
+
+-- report numerics
+-- count and weight of taxa for inverts for all survey- 408 5370
+select count (distinct a.species_code), sum(weight)
+from racebase.catch a, racebase.species b
+where region = 'GOA'
+and cruise = 202301
+and a.species_code = b.species_code
+and a.species_code > 39100
+/
+
+--count and weight of taxa for fish for all survey -163 251330
+select count (distinct a.species_code), sum(weight)
+from racebase.catch a, racebase.species b
+where region = 'GOA'
+and cruise = 202301
+and a.species_code = b.species_code
+and a.species_code < 39100
+/
+
+
+-- count and weight of taxa for inverts in 3nm - 228 1723
+select count(distinct a.species_code), sum(weight)
+from racebase.catch a, racebase.species b, racebase.haul d
+where a.region = 'GOA'
+and a.cruise = 202301
+and a.hauljoin = d.hauljoin
+and a.species_code = b.species_code
+and a.species_code > 39100
+and (d.stationid, d.stratum) in (
+select stationid, stratum
+from goa.stations_3nm
+where stratum != 0
+)
+/
+
+
+-- count and weight of taxa for fish in 3nm - 103 56899
+select count(distinct a.species_code), sum(weight)
+from racebase.catch a, racebase.species b, racebase.haul d
+where a.region = 'GOA'
+and a.cruise = 202301
+and a.hauljoin = d.hauljoin
+and a.species_code = b.species_code
+and a.species_code < 39100
+and (d.stationid, d.stratum) in (
+select stationid, stratum
+from goa.stations_3nm
+where stratum != 0
+)
+/
+
+
+
+--to help figure out count of multi species survey
+select distinct cruise, gear, accessories
+from racebase.haul
+where region = 'AI'
+and abundance_haul = 'Y'
+order by cruise, accessories
+/
+
+select distinct cruise, gear, accessories
+from racebase.haul
+where region = 'GOA'
+and abundance_haul = 'Y'
+and gear = 172
+and accessories in (64, 129)
+order by cruise, accessories
+/

@@ -1,0 +1,132 @@
+-- testing ADFG report
+
+-- hauls attempted in Alaska waters
+select count(*) 
+from racebase.haul
+where region = 'AI'
+and cruise = 202201
+and (stationid, stratum) in (
+select stationid, stratum
+from ai.stations_3nm
+)
+/
+
+-- hauls attempted in Alaska waters
+select count(*) 
+from racebase.haul
+where region = 'AI'
+and cruise = 202201
+and (stationid, stratum) in (
+select stationid, stratum
+from ai.stations_3nm
+)
+/
+
+
+
+select count(*) biomass_worthy_stations
+from (
+select stationid, stratum
+from racebase.haul
+where region = 'AI'
+and cruise = 202201
+and abundance_haul = 'Y'
+)
+
+select vessel,cruise,haul, species_code, weight, number_fish
+from racebase.catch
+where cruise = 202201
+and region = 'AI'
+and vessel = 148 and haul between 1 and 2
+
+select vessel,cruise,haul,haul_type,abundance_haul
+from racebase.haul
+where cruise = 202201
+and region = 'AI'
+order by vessel, haul
+
+select common_name, sum(weight) tot_wt
+from racebase.haul a, racebase.catch b, racebase.species c
+where a.region = 'AI'
+and a.cruise = 202201
+and a.abundance_haul = 'Y'
+and a.hauljoin = b.hauljoin
+and b.species_code = c.species_code
+group by common_name
+order by tot_wt desc
+
+select common_name, total_biomass
+from racebase.species a, ai.biomass_total b
+where a.species_code = b.species_code
+and b.year = 2022
+order by total_biomass desc
+
+
+
+
+select regulatory_area_name, count(c.species_code)
+from racebase.haul a, goa.goa_strata b, racebase.catch c
+where a.region = 'AI'
+and a.region = b.survey
+and a.cruise = 202201
+and a.hauljoin = c.hauljoin
+and a.stratum = b.stratum 
+and c.species_code between 10 and 711
+group by regulatory_area_name
+
+-- vouchered records
+select count(*) from racebase.catch
+where region = 'AI'
+and cruise = 202201
+and voucher is not null
+/
+
+-- unique vouchered taxa in all waters
+select distinct species_code
+from racebase.catch
+where region = 'AI'
+and cruise = 202201
+and voucher is not null
+order by species_code
+/
+--16 fishes and 35 inverts
+
+-- unique vouchered taxa in state waters
+select distinct species_code
+from racebase.catch a, racebase.haul b
+where a.region = 'AI'
+and a.cruise = 202201
+and a.hauljoin = b.hauljoin
+and voucher is not null
+and (b.stationid, b.stratum) in (
+select stationid, stratum
+from ai.stations_3nm
+where stratum != 0
+)
+order by species_code
+/
+
+-- otolith collections
+select count(*), count(distinct species_code)
+from racebase.specimen 
+where region = 'AI'
+and cruise = 202201
+and specimen_sample_type = 1
+/
+
+-- otoliths in AK state waters
+select count(*), count(distinct a.species_code)
+from racebase.specimen a, racebase.species b, racebase.haul d
+where a.region = 'AI'
+and a.cruise = 202201
+and a.hauljoin = d.hauljoin
+and a.species_code = b.species_code
+--and a.species_code < 39100
+and a.specimen_sample_type = 1
+and (d.stationid, d.stratum) in (
+select stationid, stratum
+from ai.stations_3nm
+where stratum != 0
+)
+/
+-- 162 invert taxa
