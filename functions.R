@@ -16,7 +16,7 @@ library(getPass)
 
 # Check the akfishcondition package is installed
 if(!("akfishcondition" %in% installed.packages())) {
-  devtools::install_github("sean-rohan-NOAA/akfishcondition")
+  devtools::install_github("afsc-gap-products/akfishcondition")
 }
 
 library(akfishcondition)
