@@ -12,7 +12,7 @@ dates_conducted <- "18 May and 6 August" #check dates for vessels
 
 survnumber <- "seventeenth" #17 for GOA in 2023 (1993 to present) #14 for AI in 2024 (1991 to present) ##differs by survey
 
-time_series <- "30 year time series" #Ask about this data point, year is 2023, 42 in 2022
+time_series <- "30 year time series" #Ask about this data point, X amount of years from survey standardization 
 
 series_begun <- "1993" #AI is 1991 #GOA is 1993
 
