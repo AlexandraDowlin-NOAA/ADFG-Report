@@ -29,17 +29,17 @@ s_stations <- haul0 %>%
   distinct(stationid, stratum) %>% nrow()
 
 
-#Total planned stations #check this number
-t_stations <- "520" # need to double check this for GOA survey
+#Total planned stations 
+t_stations <- "520" # Confirmed this is the allocation for GOA 2023
 
 
 #total of attempted hauls 555sql, 550 r
-a_hauls <- haul0 %>%  filter(region == "GOA") %>% filter(cruise == "202301") %>% filter(haul_type == "3") %>% nrow()
-
+a_hauls <- haul0 %>% filter(region == "GOA") %>% filter(cruise == "202301") %>% filter(haul_type == "3") %>% nrow()
+# MCS note: if you modify the SQL code to be haul_type = 3 (as in the R code) you'll get the same answer as R. I had 550 tows attempted in my data report!
 
 #total of unsuccessful hauls 29sql, 24 r
 u_hauls <- haul0 %>% filter(region == "GOA") %>% filter(cruise == "202301") %>% filter(abundance_haul == "N") %>% filter(haul_type == "3") %>% nrow() 
-
+# MCS note: this one is the same. If you filter the sql script to be haul_type = 3 you'll get the same number as in R. I'm not sure which is better, but 24 is the number I have in my report, so I'd say we should stick to that one.
 
 #stations within 3nm #123
 stations_3nm <- haul0 %>% 

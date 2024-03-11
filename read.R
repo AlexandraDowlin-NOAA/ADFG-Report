@@ -8,13 +8,13 @@ locations <- c(
   "RACEBASE.CRUISE",
   "RACEBASE.CATCH",
   "RACEBASE.SPECIES",
-  
+
   ## Race Data tables
   "RACE_DATA.RACE_SPECIES_CODES",
-  #"RACE_DATA.CRUISES",
+  # "RACE_DATA.CRUISES",
   "RACE_DATA.V_CRUISES",
   "GOA.STATIONS_3NM"
- # "AI.STATIONS_3NM" hashtag out depending on what year your are reporting, maybe create IF ELSE statement
+  # "AI.STATIONS_3NM" hashtag out depending on what year your are reporting, maybe create IF ELSE statement
 )
 
 
@@ -51,44 +51,46 @@ for (i in 1:length(a)) {
 }
 
 
-#UPDATE below depending on srvy and yr -----------------------------------------
-#SRVY calls region and cruise1 calls cruise. Write the code like this means not having to touch the code at all. 
+# UPDATE below depending on srvy and yr -----------------------------------------
+# SRVY calls region and cruise1 calls cruise. Write the code like this means not having to touch the code at all.
 SRVY <- "GOA"
 cruise1 <- 202301
 
-#SRVY <- "AI"
-#cruise1 <- 202201
+# SRVY <- "AI"
+# cruise1 <- 202201
 
-#in the works
-#if (SRVY == "GOA") {
- # stations_3nm0 <- RODBC::sqlQuery(channel, paste0("SELECT * FROM GOA.STATIONS_3NM"))
-#} else if (SRVY == "AI") {
- # stations_3nm0 <- RODBC::sqlQuery(channel, paste0("SELECT * FROM AI.STATIONS_3NM"))
-#}
+# in the works
+# if (SRVY == "GOA") {
+# stations_3nm0 <- RODBC::sqlQuery(channel, paste0("SELECT * FROM GOA.STATIONS_3NM"))
+# } else if (SRVY == "AI") {
+# stations_3nm0 <- RODBC::sqlQuery(channel, paste0("SELECT * FROM AI.STATIONS_3NM"))
+# }
 
-stations_3nm0 <- stations_3nm0 %>% 
+stations_3nm0 <- stations_3nm0 %>%
   janitor::clean_names()
 
 
 
-#data tables needed for report  ------------------------------------------------
+# data tables needed for report  ------------------------------------------------
 
 # catch summary 3 nm -----------------------------------------------------------
 
 catch_summary_3nm <- catch0 %>%
   dplyr::select(number_fish, weight, hauljoin, cruisejoin, cruise, region, species_code) %>%
   dplyr::left_join(haul0 %>% dplyr::select(hauljoin, cruisejoin, stationid, stratum, abundance_haul)) %>%
-  #dplyr::filter(abundance_haul == "Y") %>%
+  # dplyr::filter(abundance_haul == "Y") %>%
   dplyr::inner_join(stations_3nm0 %>%
-                      dplyr::select(stationid, stratum) %>%
-                      dplyr::distinct()) %>%
+    dplyr::select(stationid, stratum) %>%
+    dplyr::distinct()) %>%
   dplyr::filter(region == SRVY &
-                  cruise == cruise1) %>%
+    cruise == cruise1) %>%
   dplyr::group_by(species_code) %>%
-  dplyr::summarise(total_count = sum(number_fish, na.rm = TRUE), 
-                   total_weight_kg = sum(weight, na.rm = TRUE))   %>%
+  dplyr::summarise(
+    total_count = sum(number_fish, na.rm = TRUE),
+    total_weight_kg = sum(weight, na.rm = TRUE)
+  ) %>%
   ungroup() %>%
-  dplyr::left_join(species0) %>% 
+  dplyr::left_join(species0) %>%
   dplyr::select(species_code, common_name, species_name, total_weight_kg, total_count)
 
 
@@ -96,80 +98,82 @@ catch_summary_3nm <- catch0 %>%
 
 catch_summary <- catch0 %>%
   dplyr::filter(region == SRVY &
-                  cruise == cruise1) %>%
+    cruise == cruise1) %>%
   dplyr::left_join(haul0 %>% dplyr::select(hauljoin, abundance_haul)) %>%
-  #dplyr::filter(abundance_haul == "Y") %>%
+  # dplyr::filter(abundance_haul == "Y") %>%
   dplyr::group_by(species_code) %>%
-  dplyr::summarise(total_count = sum(number_fish, na.rm = TRUE), 
-                   total_weight_kg = sum(weight, na.rm = TRUE))   %>%
+  dplyr::summarise(
+    total_count = sum(number_fish, na.rm = TRUE),
+    total_weight_kg = sum(weight, na.rm = TRUE)
+  ) %>%
   ungroup() %>%
-  dplyr::left_join(species0) %>% 
+  dplyr::left_join(species0) %>%
   dplyr::select(species_code, common_name, species_name, total_weight_kg, total_count)
 
 
 
 # voucher summary 3 nm ---------------------------------------------------------
-#counts of age samples
+# counts of age samples
 age_count_3nm <- specimen0 %>%
   dplyr::left_join(haul0 %>% dplyr::select(hauljoin, stationid, stratum, abundance_haul)) %>%
-  #dplyr::filter(abundance_haul == "Y") %>%
-  dplyr::inner_join(stations_3nm0  %>%
-                      dplyr::select(stationid, stratum) %>%
-                      dplyr::distinct()) %>%
+  # dplyr::filter(abundance_haul == "Y") %>%
+  dplyr::inner_join(stations_3nm0 %>%
+    dplyr::select(stationid, stratum) %>%
+    dplyr::distinct()) %>%
   dplyr::filter(region == SRVY &
-                  stationid %in% stations_3nm0$stationid &
-                  cruise == cruise1 &
-                  specimen_sample_type == 1) %>%
+    stationid %in% stations_3nm0$stationid &
+    cruise == cruise1 &
+    specimen_sample_type == 1) %>%
   dplyr::group_by(species_code) %>%
-  dplyr::summarise(count = n()) %>% 
-  dplyr::mutate(comment  = "Age Sample")
+  dplyr::summarise(count = n()) %>%
+  dplyr::mutate(comment = "Age Sample")
 
-#counts of vouchers
+# counts of vouchers
 voucher_count_3nm <- catch0 %>%
   dplyr::left_join(haul0 %>% dplyr::select(hauljoin, stationid, stratum, abundance_haul)) %>%
-  #dplyr::filter(abundance_haul == "Y") %>%
-  dplyr::inner_join(stations_3nm0  %>% 
-                      dplyr::select(stationid, stratum) %>%
-                      dplyr::distinct()) %>%
+  # dplyr::filter(abundance_haul == "Y") %>%
+  dplyr::inner_join(stations_3nm0 %>%
+    dplyr::select(stationid, stratum) %>%
+    dplyr::distinct()) %>%
   dplyr::filter(region == SRVY &
-                  stationid %in% stations_3nm0$stationid &
-                  cruise == cruise1 &
-                  !is.na(voucher)) %>%
+    stationid %in% stations_3nm0$stationid &
+    cruise == cruise1 &
+    !is.na(voucher)) %>%
   dplyr::group_by(species_code) %>%
-  dplyr::summarise(count = n()) %>% 
-  dplyr::mutate(comment  = "Voucher")
+  dplyr::summarise(count = n()) %>%
+  dplyr::mutate(comment = "Voucher")
 
-#combine and stack vouchers and age samples
-voucher_3nm <- dplyr::bind_rows(voucher_count_3nm, age_count_3nm)  %>%
-  dplyr::left_join(species0) %>% 
+# combine and stack vouchers and age samples
+voucher_3nm <- dplyr::bind_rows(voucher_count_3nm, age_count_3nm) %>%
+  dplyr::left_join(species0) %>%
   dplyr::select(common_name, species_name, count, comment)
 
 
 
 # voucher summary  -------------------------------------------------------------
-#counts of age samples
+# counts of age samples
 age_count <- specimen0 %>%
   dplyr::left_join(haul0 %>% dplyr::select(hauljoin, abundance_haul)) %>%
-  #dplyr::filter(abundance_haul == "Y") %>%
+  # dplyr::filter(abundance_haul == "Y") %>%
   dplyr::filter(region == SRVY &
-                  cruise == cruise1 &
-                  specimen_sample_type == 1) %>%
-  dplyr::group_by(species_code) %>%
-  dplyr::summarise(count = n()) %>% 
-  dplyr::mutate(comment  = "Age Sample")
-
-#counts of vouchers
-voucher_count <- catch0 %>%
-  dplyr::left_join(haul0 %>% dplyr::select(hauljoin, abundance_haul)) %>%
-  #dplyr::filter(abundance_haul == "Y") %>%
-  dplyr::filter(region == SRVY &
-                  cruise == cruise1 &
-                  !is.na(voucher)) %>%
+    cruise == cruise1 &
+    specimen_sample_type == 1) %>%
   dplyr::group_by(species_code) %>%
   dplyr::summarise(count = n()) %>%
-  dplyr::mutate(comment  = "Voucher")
+  dplyr::mutate(comment = "Age Sample")
 
-#or
+# counts of vouchers
+voucher_count <- catch0 %>%
+  dplyr::left_join(haul0 %>% dplyr::select(hauljoin, abundance_haul)) %>%
+  # dplyr::filter(abundance_haul == "Y") %>%
+  dplyr::filter(region == SRVY &
+    cruise == cruise1 &
+    !is.na(voucher)) %>%
+  dplyr::group_by(species_code) %>%
+  dplyr::summarise(count = n()) %>%
+  dplyr::mutate(comment = "Voucher")
+
+# or
 
 # voucher_count <- catch0 %>%
 #   dplyr::filter(region == SRVY &
@@ -179,8 +183,7 @@ voucher_count <- catch0 %>%
 #   dplyr::summarise(count = sum(number_fish, na.rm=T)) %>%
 #   dplyr::mutate(comment  = "Voucher")
 
-#combine and stack vouchers and age samples
-voucher_all <- dplyr::bind_rows(voucher_count, age_count)  %>%
-  dplyr::left_join(species0) %>% 
+# combine and stack vouchers and age samples
+voucher_all <- dplyr::bind_rows(voucher_count, age_count) %>%
+  dplyr::left_join(species0) %>%
   dplyr::select(common_name, species_name, count, comment)
-
