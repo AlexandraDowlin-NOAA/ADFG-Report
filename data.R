@@ -163,3 +163,4 @@ total_wt_all_80 <- total_wt_all_catch*0.8
 
 total_wt_3nm_catch <- catch_summary_3nm %>% dplyr::mutate(total_weight_kg = as.numeric(total_weight_kg)) %>% summarize(total= sum(total_weight_kg)) %>% as.numeric()
 total_wt_3nm_80 <- total_wt_3nm_catch*0.8 
+
