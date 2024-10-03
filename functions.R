@@ -9,7 +9,6 @@ library(flextable)
 library(dplyr)
 library(tidyverse)
 library(RODBC)
-library(plyr)
 library(ggplot2)
 library(getPass)
 
