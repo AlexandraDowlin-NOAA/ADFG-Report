@@ -1,3 +1,11 @@
+# Check the akfishcondition package is installed
+if(!("akfishcondition" %in% installed.packages())) {
+  devtools::install_github("afsc-gap-products/akfishcondition")
+}
+
+library(akfishcondition)
+pkg_version <- packageVersion("akfishcondition")
+
 # Load packages
 library(knitr)
 library(ggplot2)
@@ -13,10 +21,4 @@ library(ggplot2)
 library(getPass)
 
 
-# Check the akfishcondition package is installed
-if(!("akfishcondition" %in% installed.packages())) {
-  devtools::install_github("afsc-gap-products/akfishcondition")
-}
 
-library(akfishcondition)
-pkg_version <- packageVersion("akfishcondition")
