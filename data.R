@@ -1,51 +1,57 @@
-# Code for 2023_ADFG_REPORT markdown  ------------------------------------------
+# Code for ADFG_REPORT markdown  ------------------------------------------
 
-maxyr <- "2023"
+# update manually every year ----------------------------------------------
 
-region <-  "Gulf of Alaska" #"Aleutian Islands"  
+maxyr <- "2024"
 
-regionw_abbr <-  "Gulf of Alaska (GOA)" # "Aleutian Islands (AI)"
+region <- "Aleutian Islands" #"Gulf of Alaska" 
 
-region_abbr <- "GOA" # "AI"
+regionw_abbr <- "Aleutian Islands (AI)" #"Gulf of Alaska (GOA)" 
 
-dates_conducted <- "18 May and 6 August" #check dates for vessels
+region_abbr <-  "AI" #"GOA"
 
-survnumber <- "seventeenth" #17 for GOA in 2023 (1993 to present) #14 for AI in 2024 (1991 to present) ##differs by survey
+dates_conducted <- "5 June and 3 August" #check dates for vessels
 
-time_series <- "30 year time series" #Ask about this data point, X amount of years from survey standardization 
+survnumber <- "fourteenth" #17 for GOA in 2023 (1993 to present) #14 for AI in 2024 (1991 to present) ##differs by survey
 
-series_begun <- "1993" #AI is 1991 #GOA is 1993
+time_series <- "30+ year time series" #Ask about this data point, X amount of years from survey standardization 
+
+series_begun <- "1991" #AI is 1991 #GOA is 1993
 
 vessel1 <- "FV Ocean Explorer"
 
 vessel2 <- "FV Alaska Provider"
 
+ai_methods <- "70 days each, sampling the standard survey area (~64,000 km2) and trawling 400-420 planned survey stations. In 2024, due to budgetary considerations, the two survey charters were reduced ~15% to 60 days per vessel and the total station allocation was reduced by 25% to 320 stations across the survey area. The AI survey uses a stratified-random design to allocate stations to trawlable areas in the archipelago in depths to 500 m. Survey strata are based on four depth intervals (1-100 m, 101-200 m, 201-300 m, and 301-500 m) and established survey districts and subdistricts. In 2024, the AI survey area is within the NPFMC BSAI (Bering Sea and Aleutian Islands) management area and consists of four survey districts corresponding to the Western, Central, and Eastern Aleutian National Marine Fisheries Service (NMFS) subdivisions with the addition of a southern Bering Sea (SBS) sampling district defined as the region between 170°W and 165°W and north of the archipelago"
+
+# goa_methods <- "75 days each, sampling the standard survey area (~320,000 km^2^) and trawling 520-550 survey stations. The `r region_abbr` survey uses a stratified-random design to allocate stations across the region in depths up to 700 m.  Survey strata are based on five depth intervals (1-100 m, 101-200 m, 201-300 m, 301-500 m and 501-700 m) and established survey districts and subdistricts. In `r maxyr`, the `r region_abbr` survey area is stratified into five International North Pacific Fisheries Commission (INPFC) statistical districts: Shumagins, Chirikof, Kodiak, Yakutat, and southeast Alaska"
+
 
 #successful biomass tows 526sql
 s_stations <- haul0 %>% 
   filter(abundance_haul == "Y") %>%
-  filter(cruise =="202301") %>%
-  filter(region == "GOA") %>%
+  filter(cruise == cruise1) %>%
+  filter(region == SRVY) %>%
   distinct(stationid, stratum) %>% nrow()
 
 
 #Total planned stations 
-t_stations <- "520" # Confirmed this is the allocation for GOA 2023
+t_stations <- "320" # Confirmed this for each survey year
 
 
 #total of attempted hauls 555sql, 550 r
-a_hauls <- haul0 %>% filter(region == "GOA") %>% filter(cruise == "202301") %>% filter(haul_type == "3") %>% nrow()
+a_hauls <- haul0 %>% filter(region == SRVY) %>% filter(cruise == cruise1) %>% filter(haul_type == "3") %>% nrow()
 # MCS note: if you modify the SQL code to be haul_type = 3 (as in the R code) you'll get the same answer as R. I had 550 tows attempted in my data report!
 
 #total of unsuccessful hauls 29sql, 24 r
-u_hauls <- haul0 %>% filter(region == "GOA") %>% filter(cruise == "202301") %>% filter(abundance_haul == "N") %>% filter(haul_type == "3") %>% nrow() 
+u_hauls <- haul0 %>% filter(region == SRVY) %>% filter(cruise == cruise1) %>% filter(abundance_haul == "N") %>% filter(haul_type == "3") %>% nrow() 
 # MCS note: this one is the same. If you filter the sql script to be haul_type = 3 you'll get the same number as in R. I'm not sure which is better, but 24 is the number I have in my report, so I'd say we should stick to that one.
 
 #stations within 3nm #123
 stations_3nm <- haul0 %>% 
   filter(abundance_haul == "Y") %>%
-  filter(cruise =="202301") %>%
-  filter(region == "GOA") %>%
+  filter(cruise == cruise1) %>%
+  filter(region == SRVY) %>%
   distinct(stationid, stratum) %>%
   inner_join(stations_3nm0) %>% nrow()
 
@@ -146,7 +152,7 @@ oto_3nm <- voucher_3nm %>% filter(comment=="Age Sample") %>% mutate(count = as.n
 oto_3nm_taxa <- voucher_3nm %>% filter(comment=="Age Sample") %>% nrow()
 
 
-data_finalized <- "13 September, 2023"
+data_finalized <- "11 September, 2024"  #update this every year
 
 
 # how to calculate 

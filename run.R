@@ -3,7 +3,7 @@
 
 source('./functions.R')
 source('./connect_to_oracle.R')
-source('./read.R')
+source('./read.R')           #after initial download of data, hash tag this line out.
 # source('./code/data_dl.R')
 source('./data.R')
 

@@ -13,8 +13,8 @@ locations <- c(
   "RACE_DATA.RACE_SPECIES_CODES",
   # "RACE_DATA.CRUISES",
   "RACE_DATA.V_CRUISES",
-  "GOA.STATIONS_3NM"
-  # "AI.STATIONS_3NM" hashtag out depending on what year your are reporting, maybe create IF ELSE statement
+  # "GOA.STATIONS_3NM" #hastag out depending on what year your are reporting
+   "AI.STATIONS_3NM" #hashtag out depending on what year your are reporting, maybe create IF ELSE statement
 )
 
 
@@ -53,11 +53,12 @@ for (i in 1:length(a)) {
 
 # UPDATE below depending on srvy and yr -----------------------------------------
 # SRVY calls region and cruise1 calls cruise. Write the code like this means not having to touch the code at all.
-SRVY <- "GOA"
-cruise1 <- 202301
 
-# SRVY <- "AI"
-# cruise1 <- 202201
+# SRVY <- "GOA"
+#cruise1 <- 202301
+
+ SRVY <- "AI"
+ cruise1 <- "202401"
 
 # in the works
 # if (SRVY == "GOA") {
@@ -187,3 +188,4 @@ voucher_count <- catch0 %>%
 voucher_all <- dplyr::bind_rows(voucher_count, age_count) %>%
   dplyr::left_join(species0) %>%
   dplyr::select(common_name, species_name, count, comment)
+
