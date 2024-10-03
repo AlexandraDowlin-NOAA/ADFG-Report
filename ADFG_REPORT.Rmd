@@ -43,9 +43,10 @@ Active fishing for the `r maxyr` `r region_abbr` bottom trawl survey occurred be
 library(here)
 catch_summary_3nm1 = catch_summary_3nm 
 #catch_summary_3nm1[is.na(catch_summary_3nm1)] <- ""
-catch_sum_3nm <- catch_summary_3nm1 %>% arrange(desc(total_weight_kg)) %>%
+catch_sum_3nm <- catch_summary_3nm1 %>% 
+  arrange(desc(total_weight_kg)) %>%
   separate(species_name, c("species", "species_suffix"),
-    sep = "(?= sp.)", extra = "merge", remove = FALSE
+    sep = "(?= sp\\.)", extra = "merge", remove = FALSE
   ) %>%
   mutate(species_suffix = case_when(
     stringr::str_count(species, "\\w+") == 1 & is.na(species_suffix) ~ species,
