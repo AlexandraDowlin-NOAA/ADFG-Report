@@ -43,7 +43,8 @@ Active fishing for the `r maxyr` `r region_abbr` bottom trawl survey occurred be
 library(here)
 catch_summary_3nm1 = catch_summary_3nm 
 #catch_summary_3nm1[is.na(catch_summary_3nm1)] <- ""
-catch_sum_3nm <- catch_summary_3nm1 %>% arrange(desc(total_weight_kg)) %>%
+catch_sum_3nm <- catch_summary_3nm1 %>% 
+  arrange(desc(total_weight_kg)) %>%
   separate(species_name, c("species", "species_suffix"),
     sep = "(?= sp\\.)", extra = "merge", remove = FALSE
   ) %>%
@@ -54,8 +55,14 @@ catch_sum_3nm <- catch_summary_3nm1 %>% arrange(desc(total_weight_kg)) %>%
   separate(species, c("species_2", "egg_case"), sep = "(?=egg case)", remove = TRUE) %>%
   mutate(new_suffix = coalesce(species_suffix, egg_case)) %>%
   dplyr::select(-species_suffix, -egg_case)
-  
-catch_sum_3nm$total_count[which(catch_sum_3nm$total_count==0)] <- "--"
+
+# Round total counts and format with commas
+catch_sum_3nm$total_count <-  format(round(catch_sum_3nm$total_count), big.mark = ",")  
+catch_sum_3nm$total_count[which(catch_sum_3nm$total_count=="     0")] <- "--"
+
+# Round total weight and format with commas
+catch_sum_3nm$total_weight_kg <-  format(round(catch_sum_3nm$total_weight_kg,digits = 2), big.mark = ",")
+
 
 for (i in 1:nrow(catch_sum_3nm)) {
   if (!is.na(catch_sum_3nm$new_suffix[i])) {

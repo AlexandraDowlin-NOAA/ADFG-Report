@@ -163,6 +163,7 @@ total_wt_all_80 <- total_wt_all_catch*0.8
 total_wt_3nm_catch <- catch_summary_3nm %>% dplyr::mutate(total_weight_kg = as.numeric(total_weight_kg)) %>% summarize(total= sum(total_weight_kg)) %>% as.numeric()
 total_wt_3nm_80 <- total_wt_3nm_catch*0.8 
 
+<<<<<<< HEAD
 
 
 #3nm counts of fish taxa vouchers vs invert taxa vouchers
@@ -191,3 +192,5 @@ invert_taxa_all_count <- voucher_count %>%  dplyr::mutate(taxon = dplyr::case_wh
   
   species_code >= 40001 ~ "invert"     
 )) %>% dplyr::filter(taxon == "invert") %>% nrow()
+=======
+>>>>>>> 27cb1c5da6d54cbc43fd7ad4915e014a6c231f2a
