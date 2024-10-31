@@ -10,11 +10,11 @@
  cruise1 <- "202401"
 
 # in the works
-# if (SRVY == "GOA") {
-# stations_3nm0 <- RODBC::sqlQuery(channel, paste0("SELECT * FROM GOA.STATIONS_3NM"))
-# } else if (SRVY == "AI") {
-# stations_3nm0 <- RODBC::sqlQuery(channel, paste0("SELECT * FROM AI.STATIONS_3NM"))
-# }
+if (SRVY == "GOA") {
+stations_3nm0 <- RODBC::sqlQuery(channel, paste0("SELECT * FROM GOA.STATIONS_3NM"))
+} else if (SRVY == "AI") {
+stations_3nm0 <- RODBC::sqlQuery(channel, paste0("SELECT * FROM AI.STATIONS_3NM"))
+}
 
 
 # data tables needed for report  ------------------------------------------------
