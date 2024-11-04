@@ -5,7 +5,7 @@ source('./functions.R')
 
 #skip connect and data_dl if data has already be recently downloaded
 source('./connect_to_oracle.R')
-source('./code/data_dl.R')
+source('./data_dl.R')
 
 # if data already downloaded then:
 catch0 <- read.csv("./data/oracle/racebase-catch.csv") %>% janitor::clean_names()
