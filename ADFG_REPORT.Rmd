@@ -127,10 +127,15 @@ catch_sum_all <- catch_summary1 %>%
 
 # Round total counts and format with commas
 catch_sum_all$total_count <-  format(round(catch_sum_all$total_count), big.mark = ",")  
-catch_sum_all$total_count[which(catch_sum_all$total_count=="     0")] <- "--"
+catch_sum_all$total_count[which(catch_sum_all$total_count=="      0")] <- "--"
 
 # Round total weight and format with commas
-catch_sum_all$total_weight_kg <-  format(round(catch_sum_all$total_weight_kg,digits = 2), big.mark = ",")
+catch_sum_all$total_weight_kg_txt <-  format(round(catch_sum_all$total_weight_kg,digits = 2), big.mark = ",")
+catch_sum_all$total_weight_kg_txt[catch_sum_all$total_weight_kg < 0.01] <- "< 0.01"
+
+# Now replace the original numeric values with the modified ones
+catch_sum_all$total_weight_kg <- catch_sum_all$total_weight_kg_txt
+
 
 for (i in 1:nrow(catch_sum_all)) {
   if (!is.na(catch_sum_all$new_suffix[i])) {
@@ -147,7 +152,7 @@ flextable::flextable(catch_sum_all, col_keys = c("common_name", "dummy_col", "to
       as_i(species_2),
       "", new_suffix
   )) %>% 
-  flextable::add_header_lines("Table 2. 2024 Catch summary table - totals for survey (including state waters); \"--\" indicates \"null \".", top = TRUE) %>%
+  flextable::add_header_lines("Table 2. 2024 Catch summary table - totals for survey (including state waters); \"--\" indicates \"null\".", top = TRUE) %>%
   flextable::font(fontname = "Times New Roman", part = "all") %>%
   flextable::fontsize(size = 12, part = "all") %>%
   flextable::theme_vanilla() %>%
