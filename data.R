@@ -22,7 +22,12 @@ vessel1 <- "FV Ocean Explorer"
 
 vessel2 <- "FV Alaska Provider"
 
-ai_methods <- "70 days each, sampling the standard survey area (~64,000 km2) and trawling 400-420 planned survey stations. In 2024, due to budgetary considerations, the two survey charters were reduced ~15% to 60 days per vessel and the total station allocation was reduced by 25% to 320 stations across the survey area. The AI survey uses a stratified-random design to allocate stations to trawlable areas in the archipelago in depths to 500 m. Survey strata are based on four depth intervals (1-100 m, 101-200 m, 201-300 m, and 301-500 m) and established survey districts and subdistricts. In 2024, the AI survey area is within the NPFMC BSAI (Bering Sea and Aleutian Islands) management area and consists of four survey districts corresponding to the Western, Central, and Eastern Aleutian National Marine Fisheries Service (NMFS) subdivisions with the addition of a southern Bering Sea (SBS) sampling district defined as the region between 170°W and 165°W and north of the archipelago"
+data_finalized <- "11 September, 2024"  #update this every year
+
+#Total planned stations 
+t_stations <- "320" # Confirmed this for each survey year
+
+ai_methods <- "70 days each, sampling the standard survey area (~64,000 km2) and trawling 400-420 planned survey stations. In 2024, due to budgetary considerations, the two survey charters were reduced ~15% to 60 days per vessel and the total station allocation was reduced to 320 stations distributed across the survey area. The AI survey uses a stratified-random design to allocate stations to trawlable areas in the archipelago in depths to 500 m based on four depth strata (1-100 m, 101-200 m, 201-300 m, and 301-500 m) and previously established survey districts and subdistricts. The AI survey area is within the NPFMC BSAI (Bering Sea and Aleutian Islands) management area and consists of four survey districts corresponding to the Western, Central, and Eastern Aleutian National Marine Fisheries Service (NMFS) subdivisions with the addition of a southern Bering Sea (SBS) sampling district defined as the region between 170°W and 165°W and north of the archipelago"
 
 # goa_methods <- "75 days each, sampling the standard survey area (~320,000 km^2^) and trawling 520-550 survey stations. The `r region_abbr` survey uses a stratified-random design to allocate stations across the region in depths up to 700 m.  Survey strata are based on five depth intervals (1-100 m, 101-200 m, 201-300 m, 301-500 m and 501-700 m) and established survey districts and subdistricts. In `r maxyr`, the `r region_abbr` survey area is stratified into five International North Pacific Fisheries Commission (INPFC) statistical districts: Shumagins, Chirikof, Kodiak, Yakutat, and southeast Alaska"
 
@@ -33,10 +38,6 @@ s_stations <- haul0 %>%
   filter(cruise == cruise1) %>%
   filter(region == SRVY) %>%
   distinct(stationid, stratum) %>% nrow()
-
-
-#Total planned stations 
-t_stations <- "320" # Confirmed this for each survey year
 
 
 #total of attempted hauls 555sql, 550 r
@@ -152,10 +153,8 @@ oto_3nm <- voucher_3nm %>% filter(comment=="Age Sample") %>% mutate(count = as.n
 oto_3nm_taxa <- voucher_3nm %>% filter(comment=="Age Sample") %>% nrow()
 
 
-data_finalized <- "11 September, 2024"  #update this every year
 
-
-# how to calculate 
+# trying to figure out how to do 80% of the total wt and total wt within 3nm
 total_wt_all_catch <- catch_summary %>% dplyr::mutate(total_weight_kg = as.numeric(total_weight_kg)) %>% summarize(total= sum(total_weight_kg)) %>% as.numeric()
 total_wt_all_80 <- total_wt_all_catch*0.8   
 
@@ -163,4 +162,34 @@ total_wt_all_80 <- total_wt_all_catch*0.8
 
 total_wt_3nm_catch <- catch_summary_3nm %>% dplyr::mutate(total_weight_kg = as.numeric(total_weight_kg)) %>% summarize(total= sum(total_weight_kg)) %>% as.numeric()
 total_wt_3nm_80 <- total_wt_3nm_catch*0.8 
+
+
+
+
+#3nm counts of fish taxa vouchers vs invert taxa vouchers
+fish_taxa_count_3nm <- voucher_count_3nm  %>% dplyr::mutate(taxon = dplyr::case_when(       
+  species_code <= 31550 ~ "fish",       
+  
+  species_code >= 40001 ~ "invert"     
+)) %>% dplyr::filter(taxon == "fish") %>% nrow()
+
+invert_taxa_count_3nm <- voucher_count_3nm  %>% dplyr::mutate(taxon = dplyr::case_when(       
+  species_code <= 31550 ~ "fish",       
+  
+  species_code >= 40001 ~ "invert"     
+)) %>% dplyr::filter(taxon == "invert") %>% nrow()
+
+
+#total survey area counts of fish taxa vouchers vs invert taxa vouchers
+fish_taxa_all_count <- voucher_count %>%  dplyr::mutate(taxon = dplyr::case_when(       
+  species_code <= 31550 ~ "fish",       
+  
+  species_code >= 40001 ~ "invert"     
+)) %>% dplyr::filter(taxon == "fish") %>% nrow()
+
+invert_taxa_all_count <- voucher_count %>%  dplyr::mutate(taxon = dplyr::case_when(       
+  species_code <= 31550 ~ "fish",       
+  
+  species_code >= 40001 ~ "invert"     
+)) %>% dplyr::filter(taxon == "invert") %>% nrow()
 
