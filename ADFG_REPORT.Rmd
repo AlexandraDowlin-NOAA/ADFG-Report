@@ -64,6 +64,7 @@ catch_sum_3nm <- catch_summary_3nm1 %>%
 # Round total counts and format with commas
 catch_sum_3nm$total_count <- format(round(catch_sum_3nm$total_count), big.mark = ",")
 catch_sum_3nm$total_count[which(catch_sum_3nm$total_count == "     0")] <- "--"
+catch_sum_3nm$total_count[which(catch_sum_3nm$species_code %in% dashes_lookup$species_code)] <- "--" #no counts for certain taxa
 
 # Round total weight and format with commas
 catch_sum_3nm$total_weight_kg_txt <- format(round(catch_sum_3nm$total_weight_kg, digits = 2), big.mark = ",")
@@ -86,6 +87,7 @@ flextable::flextable(catch_sum_3nm, col_keys = c("common_name", "dummy_col", "to
       as_i(species_2),
       "", new_suffix
   )) %>%
+  flextable::add_header_lines("Table 1. 2024 Catch summary table - totals within 3-mile territorial waters (Alaska state waters); \"--\" indicates \"null\". Counts for sponges (phylum Porifera), bryozoans (phylum Bryozoa), ascidians (class Ascidiacea), and Anthozoans (subphylum Anthozoa) that are not anemones (order Actinaria) or sea pens (order Pennatulacea) are not provided, as these taxa are either colonial or not consistently counted in the bottom trawl survey.", top = TRUE) %>%
   flextable::add_header_lines("Table 1. 2024 Catch summary table - totals within 3-mile territorial waters (Alaska state waters); \"--\" indicates cases where counts are not typically recorded (e.g., colonial organisms or species that are easily damaged or fragmented in the catch).", top = TRUE) %>%
   flextable::font(fontname = "Times New Roman", part = "all") %>%
   flextable::fontsize(size = 12, part = "all") %>%
@@ -128,6 +130,7 @@ catch_sum_all <- catch_summary1 %>%
 # Round total counts and format with commas
 catch_sum_all$total_count <-  format(round(catch_sum_all$total_count), big.mark = ",")  
 catch_sum_all$total_count[which(catch_sum_all$total_count=="      0")] <- "--"
+catch_sum_all$total_count[which(catch_sum_all$species_code %in% dashes_lookup$species_code)] <- "--" #no counts for certain taxa
 
 # Round total weight and format with commas
 catch_sum_all$total_weight_kg_txt <-  format(round(catch_sum_all$total_weight_kg,digits = 2), big.mark = ",")
@@ -152,6 +155,7 @@ flextable::flextable(catch_sum_all, col_keys = c("common_name", "dummy_col", "to
       as_i(species_2),
       "", new_suffix
   )) %>% 
+  flextable::add_header_lines("Table 2. 2024 Catch summary table - totals for survey (including state waters); \"--\" indicates \"null\". Counts for sponges (phylum Porifera), bryozoans (phylum Bryozoa), ascidians (class Ascidiacea), and Anthozoans (subphylum Anthozoa) that are not anemones (order Actinaria) or sea pens (order Pennatulacea) are not provided, as these taxa are either colonial or not consistently counted in the bottom trawl survey.", top = TRUE) %>%
   flextable::add_header_lines("Table 2. 2024 Catch summary table - totals for survey (including state waters); \"--\" indicates cases where counts are not typically recorded (e.g., colonial organisms or species that are easily damaged or fragmented in the catch).", top = TRUE) %>%
   flextable::font(fontname = "Times New Roman", part = "all") %>%
   flextable::fontsize(size = 12, part = "all") %>%

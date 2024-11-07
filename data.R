@@ -193,3 +193,15 @@ invert_taxa_all_count <- voucher_count %>%  dplyr::mutate(taxon = dplyr::case_wh
   species_code >= 40001 ~ "invert"     
 )) %>% dplyr::filter(taxon == "invert") %>% nrow()
 
+# Lookup table for species that won't get counts in catch summary tables -------
+dashes_lookup <- taxonomy0 |>
+  dplyr::filter(survey_species == 1) |>
+  mutate(no_counts = case_when(
+    phylum_taxon %in% c("Porifera", "Bryozoa") ~ 1,
+    class_taxon == "Ascidiacea" ~ 1,
+    subphylum_taxon == "Anthozoa" &
+      order_taxon != "Actiniaria" &
+      order_taxon != "Pennatulacea" ~ 1,
+    TRUE ~ 0
+  )) |>
+  dplyr::filter(no_counts == 1)

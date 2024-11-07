@@ -14,6 +14,7 @@ specimen0 <- read.csv("./data/oracle/racebase-specimen.csv") %>% janitor::clean_
 species0 <- read.csv("./data/oracle/racebase-species.csv") %>% janitor::clean_names()
 stations_3nm0 <- read.csv("./data/oracle/ai-stations_3nm.csv") %>% janitor::clean_names()
 # stations_3nm0 <- read.csv("./data/oracle/goa-stations_3nm.csv") %>% janitor::clean_names() odd years only
+taxonomy0 <- read.csv("./data/oracle/gap_products-taxonomic_classification.csv") %>% janitor::clean_names()
 
 # --------------------------
 # Update based on survey and year 
@@ -26,7 +27,7 @@ cruise1 <- "202401"
 
 # -------------------
 source('./read.R') #creates tables needed for document
-source('./data.R') #anaylsis of data for document
+source('./data.R') #analysis of data for document
 
 
 # -----------------------------

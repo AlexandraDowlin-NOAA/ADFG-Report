@@ -14,7 +14,10 @@ locations <- c(
   # "RACE_DATA.CRUISES",
   "RACE_DATA.V_CRUISES",
   # "GOA.STATIONS_3NM" #hastag out depending on what year your are reporting
-  "AI.STATIONS_3NM" #hashtag out depending on what year your are reporting, maybe create IF ELSE statement
+  "AI.STATIONS_3NM", #hashtag out depending on what year your are reporting, maybe create IF ELSE statement
+  
+  # GAP_PRODUCTS tables
+  "GAP_PRODUCTS.TAXONOMIC_CLASSIFICATION"
 )
 
 
