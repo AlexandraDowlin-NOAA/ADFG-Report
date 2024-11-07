@@ -64,6 +64,7 @@ catch_sum_3nm <- catch_summary_3nm1 %>%
 # Round total counts and format with commas
 catch_sum_3nm$total_count <- format(round(catch_sum_3nm$total_count), big.mark = ",")
 catch_sum_3nm$total_count[which(catch_sum_3nm$total_count == "     0")] <- "--"
+catch_sum_3nm$total_count[which(catch_sum_3nm$species_code %in% dashes_lookup$species_code)] <- "--" #no counts for certain taxa
 
 # Round total weight and format with commas
 catch_sum_3nm$total_weight_kg_txt <- format(round(catch_sum_3nm$total_weight_kg, digits = 2), big.mark = ",")
@@ -128,6 +129,7 @@ catch_sum_all <- catch_summary1 %>%
 # Round total counts and format with commas
 catch_sum_all$total_count <-  format(round(catch_sum_all$total_count), big.mark = ",")  
 catch_sum_all$total_count[which(catch_sum_all$total_count=="      0")] <- "--"
+catch_sum_all$total_count[which(catch_sum_all$species_code %in% dashes_lookup$species_code)] <- "--" #no counts for certain taxa
 
 # Round total weight and format with commas
 catch_sum_all$total_weight_kg_txt <-  format(round(catch_sum_all$total_weight_kg,digits = 2), big.mark = ",")
