@@ -138,4 +138,3 @@ voucher_count <- catch0 %>%
 voucher_all <- dplyr::bind_rows(voucher_count, age_count) %>%
   dplyr::left_join(species0) %>%
   dplyr::select(common_name, species_name, count, comment)
-

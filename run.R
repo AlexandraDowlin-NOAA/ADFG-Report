@@ -27,7 +27,7 @@ cruise1 <- "202401"
 
 # -------------------
 source('./read.R') #creates tables needed for document
-source('./data.R') #anaylsis of data for document
+source('./data.R') #analysis of data for document
 
 
 # -----------------------------
